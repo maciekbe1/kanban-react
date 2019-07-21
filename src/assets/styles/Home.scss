@@ -1,0 +1,23 @@
+.bg-img {
+    // position: relative;
+    // width: auto;
+    // margin-top: 4.25rem;
+    // height: 500px;
+    // background: url("../images/home.png");
+    // background-size: cover;
+    // background-repeat: no-repeat;
+
+    // &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: -100%;
+    background-image: linear-gradient(
+        to right,
+        rgba(255, 0, 0, 0),
+        #34495e 50%
+    );
+    // }
+}
