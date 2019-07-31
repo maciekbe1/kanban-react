@@ -73,12 +73,13 @@ export default function Navigation() {
                             </Link>
                         </div>
                     ) : (
-                        <button
+                        <Link
                             className="btn btn-belizehole"
                             onClick={onSignout}
+                            to="/"
                         >
                             Logout
-                        </button>
+                        </Link>
                     )}
                 </div>
             </div>

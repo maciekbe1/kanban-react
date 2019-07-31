@@ -36,7 +36,7 @@ const initialFormState = {
 
 export default function Signup() {
     const [form, setForm] = useState(initialFormState);
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
 
     const handleChange = event => {
         setForm({
@@ -48,9 +48,8 @@ export default function Signup() {
         e.preventDefault();
 
         createUser().then(({ data }) => {
-            setUser(form);
+            // setUser(form);
             setForm(initialFormState);
-            console.log(data);
         });
     };
     const validateForm = () => {

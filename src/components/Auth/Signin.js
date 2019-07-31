@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Context from "../../context";
 import Error from "../Error";
 import gql from "graphql-tag";
@@ -12,9 +12,8 @@ const SIGNIN_QUERY = gql`
         }
     }
 `;
-export default function Signin() {
+function Signin(props) {
     const { dispatch } = useContext(Context);
-    const context = useContext(Context);
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
 
@@ -33,6 +32,7 @@ export default function Signin() {
                     userId: isAuthenticated().userId
                 }
             });
+            props.history.push(`/`);
         });
     };
     const validateForm = () => {
@@ -40,9 +40,7 @@ export default function Signin() {
         return isInvalid;
     };
 
-    return context.state.isAuth ? (
-        <Redirect to="/" noThrow />
-    ) : (
+    return (
         <div
             className="modal fade"
             id="loginModal"
@@ -162,3 +160,4 @@ export default function Signin() {
         </div>
     );
 }
+export default withRouter(Signin);

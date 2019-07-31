@@ -9,24 +9,33 @@ import About from "./components/Pages/About";
 import NotFound from "./components/Pages/PageNotFound";
 import Navigation from "./components/Navigation";
 import Signup from "./components/Auth/Signup";
-
+import Messages from "./components/Panel/Messages";
+import Projects from "./components/Panel/Projects";
+import Sidemenu from "./components/Sidemenu";
 export default function Routes() {
     const context = useContext(Context);
 
     return (
         <BrowserRouter>
             <Navigation />
-            {/* {context.state.isAuth ? <Sidebar /> : null} */}
-
             {context.state.isAuth ? (
-                <Switch>
-                    <ProtectedRoute
-                        path="/"
-                        exact
-                        render={render => <Panel {...render} />}
-                    />
-                    <Route component={NotFound} />
-                </Switch>
+                <div className="container-fluid row">
+                    <div className="col-12 col-md-3 col-xl-2">
+                        <Sidemenu />
+                    </div>
+                    <div className="col-12 col-md-9 col-xl-8 bg-light">
+                        <Switch>
+                            <ProtectedRoute
+                                path="/"
+                                exact
+                                render={render => <Panel {...render} />}
+                            />
+                            <Route path="/projects" component={Projects} />
+                            <Route path="/messages" component={Messages} />
+                            <Route component={NotFound} />
+                        </Switch>
+                    </div>
+                </div>
             ) : (
                 <Switch>
                     <Route
