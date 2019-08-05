@@ -12,7 +12,7 @@ export default function PanelMessage(props) {
 	const [readed, setReaded] = useState(props.data.readed);
 	const handleMessageUpload = changeMessageStatus => {
 		changeMessageStatus().then(({ data }) => {
-			console.log(data);
+			// console.log(data);
 			setReaded(true);
 		});
 	};
@@ -23,7 +23,7 @@ export default function PanelMessage(props) {
 		>
 			{(changeMessageStatus, { data, loading, error }) => {
 				return (
-					<div>
+					<div className="d-flex my-4">
 						<p
 							className={
 								readed ? "text-alert" : "font-weight-bold"
@@ -31,13 +31,15 @@ export default function PanelMessage(props) {
 						>
 							{props.data.message}
 						</p>
-						<button
-							onClick={() =>
-								handleMessageUpload(changeMessageStatus)
-							}
-						>
-							mark as readed
-						</button>
+						{!readed ? (
+							<button
+								onClick={() =>
+									handleMessageUpload(changeMessageStatus)
+								}
+							>
+								mark as readed
+							</button>
+						) : null}
 					</div>
 				);
 			}}
