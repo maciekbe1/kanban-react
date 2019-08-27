@@ -3,8 +3,10 @@ import { withRouter } from "react-router-dom";
 import Context from "../../context";
 import Error from "../Error";
 import gql from "graphql-tag";
-import { Mutation } from "react-apollo";
+import { useMutation } from "react-apollo-hooks";
 import { isAuthenticated } from "../../containers/isAuth";
+import Cookies from "universal-cookie";
+
 const SIGNIN_MUTATION = gql`
 	mutation signInMutation($login: String!, $password: String!) {
 		signIn(login: $login, password: $password) {
@@ -16,6 +18,10 @@ function Signin(props) {
 	const { dispatch } = useContext(Context);
 	const [login, setLogin] = useState("");
 	const [password, setPassword] = useState("");
+	const cookies = new Cookies();
+	const [signIn, { loading, error }] = useMutation(SIGNIN_MUTATION, {
+		variables: { login, password }
+	});
 
 	const onSignin = (e, signIn) => {
 		e.preventDefault();
@@ -23,13 +29,15 @@ function Signin(props) {
 			setPassword("");
 			setLogin("");
 			document.querySelector("#closeLoginModal").click();
-			sessionStorage.setItem("token", data.signIn.token);
+			// sessionStorage.setItem("token", data.signIn.token);
+			cookies.set("token", data.signIn.token);
+
 			dispatch({
 				type: "SIGNIN_USER",
 				payload: {
 					isAuth: true,
 					login: isAuthenticated().login,
-					userId: isAuthenticated().userId
+					userID: isAuthenticated().userID
 				}
 			});
 			props.history.push(`/`);
@@ -65,89 +73,76 @@ function Signin(props) {
 						</button>
 					</div>
 					<div className="modal-body">
-						<Mutation
-							mutation={SIGNIN_MUTATION}
-							variables={{ login, password }}
+						<form
+							id="signInModal"
+							// onKeyPress={e =>
+							//     e.key === "Enter" ? onSignin() : null
+							// }
+							onSubmit={e => onSignin(e, signIn)}
 						>
-							{(signIn, { data, loading, error }) => {
-								return (
-									<form
-										id="signInModal"
-										// onKeyPress={e =>
-										//     e.key === "Enter" ? onSignin() : null
-										// }
-										onSubmit={e => onSignin(e, signIn)}
-									>
-										<div className="form-group">
-											<label
-												htmlFor="recipient-name"
-												className="col-form-label"
-											>
-												Login:
-											</label>
-											<input
-												className="form-control"
-												id="login"
-												type="text"
-												placeholder="Login"
-												onChange={event =>
-													setLogin(event.target.value)
-												}
-												value={login}
-											/>
-										</div>
-										<div className="form-group">
-											<label
-												htmlFor="recipient-name"
-												className="col-form-label"
-											>
-												Password:
-											</label>
-											<input
-												className="form-control"
-												id="password"
-												type="password"
-												placeholder="Password"
-												onChange={event =>
-													setPassword(
-														event.target.value
-													)
-												}
-												value={password}
-											/>
-										</div>
-										<div className="modal-footer">
-											<button
-												id="closeLoginModal"
-												type="button"
-												className="btn btn-secondary"
-												data-dismiss="modal"
-											>
-												Cancel
-											</button>
-											<button
-												className="btn btn-belizehole"
-												type="submit"
-												disabled={
-													!login || validateForm()
-												}
-											>
-												{loading ? (
-													<span
-														className="spinner-border spinner-border-sm"
-														role="status"
-														aria-hidden="true"
-													/>
-												) : (
-													"Sign in"
-												)}
-											</button>
-										</div>
-										{error && <Error error={error} />}
-									</form>
-								);
-							}}
-						</Mutation>
+							<div className="form-group">
+								<label
+									htmlFor="recipient-name"
+									className="col-form-label"
+								>
+									Login:
+								</label>
+								<input
+									className="form-control"
+									id="login"
+									type="text"
+									placeholder="Login"
+									onChange={event =>
+										setLogin(event.target.value)
+									}
+									value={login}
+								/>
+							</div>
+							<div className="form-group">
+								<label
+									htmlFor="recipient-name"
+									className="col-form-label"
+								>
+									Password:
+								</label>
+								<input
+									className="form-control"
+									id="password"
+									type="password"
+									placeholder="Password"
+									onChange={event =>
+										setPassword(event.target.value)
+									}
+									value={password}
+								/>
+							</div>
+							<div className="modal-footer">
+								<button
+									id="closeLoginModal"
+									type="button"
+									className="btn btn-secondary"
+									data-dismiss="modal"
+								>
+									Cancel
+								</button>
+								<button
+									className="btn btn-belizehole"
+									type="submit"
+									disabled={!login || validateForm()}
+								>
+									{loading ? (
+										<span
+											className="spinner-border spinner-border-sm"
+											role="status"
+											aria-hidden="true"
+										/>
+									) : (
+										"Sign in"
+									)}
+								</button>
+							</div>
+							{error && <Error error={error} />}
+						</form>
 
 						{/* {loginFailure ? (
                             <div className="text-danger">

@@ -1,48 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import gql from "graphql-tag";
-import { Subscription } from "react-apollo";
-// import Context from "../context";
-// const GET_MESSAGES = gql`
-// 	query getAllMessages($userId: ID!) {
-// 		getAllUserMessages(userId: $userId) {
-// 			unreadedMessages
-// 		}
-// 	}
-// `;
-const MESSAGES_SUBSCRIPTION = gql`
-	subscription onMessagesChange {
-		count
-	}
-`;
-export default function Sidemenu() {
-	// const context = useContext(Context);
+import { MESSAGES_COUNTER } from "../graphql";
+import { useSubscription } from "react-apollo-hooks";
+import Context from "../context";
 
+export default function Sidemenu() {
+	const context = useContext(Context);
+	const { loading, data } = useSubscription(MESSAGES_COUNTER, {
+		variables: { userID: context.state.userID }
+	});
 	return (
 		<nav className="nav flex-column">
-			<NavLink className="p-1 nav-link active" to="/">
+			<NavLink className="p-1 nav-link" to="/">
 				Home
-			</NavLink>
-			<NavLink className="p-1 nav-link" to="/projects">
-				Projects
 			</NavLink>
 			<NavLink className="p-1 nav-link" to="/kanban">
 				kanban
 			</NavLink>
 			<NavLink className="p-1 nav-link" to="/messages">
-				<Subscription
-					subscription={MESSAGES_SUBSCRIPTION}
-					// variables={{
-					// 	userId: context.state.userId
-					// }}
-				>
-					{({ data, loading, error }) => {
-						if (loading) return <h4>Loading...</h4>;
-						if (error) console.log(error);
-						console.log(data);
-						return <div>Messages {data.count}</div>;
-					}}
-				</Subscription>
+				messages
+				{loading ? "..." : " " + data.messageCounter}
+			</NavLink>
+			<NavLink className="p-1 nav-link" to="/projects">
+				Projects
 			</NavLink>
 		</nav>
 	);

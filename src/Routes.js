@@ -30,8 +30,8 @@ export default function Routes() {
 								exact
 								render={render => <Main {...render} />}
 							/>
-							<Route path="/projects" component={Projects} />
 							<Route path="/messages" component={Messages} />
+							<Route path="/projects" component={Projects} />
 							<Route component={NotFound} />
 						</Switch>
 					</div>

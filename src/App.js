@@ -1,12 +1,12 @@
 import React, { useContext, useReducer } from "react";
 import "./assets/styles/Global.scss";
-import { ApolloClient } from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
+import { ApolloClient } from "apollo-client";
+import { ApolloProvider } from "react-apollo-hooks";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { createHttpLink } from "apollo-link-http";
-// import { setContext } from "apollo-link-context";
-
+import Cookies from "universal-cookie";
 import { split } from "apollo-link";
+// import { SubscriptionClient } from "subscriptions-transport-ws";
 // import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
@@ -17,27 +17,33 @@ import Context from "./context";
 import reducer from "./reducer";
 
 function App() {
+	const cookies = new Cookies();
 	const initialState = useContext(Context);
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const ACCESS_TOKEN = sessionStorage.getItem("token");
+	const ACCESS_TOKEN = cookies.get("token");
 
 	const httpLink = createHttpLink({
 		uri: process.env.REACT_APP_API,
-		connectionParams: {
-			authToken: ACCESS_TOKEN
+		options: {
+			connectionParams: () => ({
+				authorization: ACCESS_TOKEN ? `${ACCESS_TOKEN}` : null
+			})
+		},
+		headers: {
+			Authorization: ACCESS_TOKEN
 		}
 	});
 	const wsLink = new WebSocketLink({
-		uri: `ws://localhost:4000/graphql`,
+		uri: process.env.REACT_APP_WS,
 		options: {
-			reconnect: true
+			reconnect: true,
+			connectionParams: () => ({
+				authorization: ACCESS_TOKEN ? `${ACCESS_TOKEN}` : null
+			})
 		},
-		connectionParams: {
-			authToken: ACCESS_TOKEN
+		headers: {
+			Authorization: ACCESS_TOKEN
 		}
-		// headers: {
-		// 	Authorization: `Bearer ${ACCESS_TOKEN}`
-		// }
 	});
 	// const authLink = setContext((_, { headers }) => {
 	// 	// get the authentication token from local storage if it exists
