@@ -20,8 +20,12 @@
     "react-apollo": "^3.0.0",
     "react-apollo-hooks": "^0.5.0",
     "react-dom": "^16.9.0",
+    "react-redux": "^7.1.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.0",
+    "redux": "^4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "subscriptions-transport-ws": "^0.9.16",
     "universal-cookie": "^4.0.2"
   },

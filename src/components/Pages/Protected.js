@@ -1,18 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import Context from "../../context";
+import { useSelector } from "react-redux";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-    const context = useContext(Context);
-    // console.log(context.state.isAuth);
+    const user = useSelector(state => state.currentUser);
     return (
         <Route
             render={props =>
-                context.state.isAuth ? (
-                    <Component {...props} />
-                ) : (
-                    <Redirect to="/" />
-                )
+                user.isAuth ? <Component {...props} /> : <Redirect to="/" />
             }
             {...rest}
         />
