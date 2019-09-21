@@ -1,5 +1,11 @@
-.navigation {
-    .logo {
+#drawer {
+    .logo-image {
         width: 50px;
+    }
+    .logo-name {
+        color: #ffffff;
+        &:hover {
+            color: #ffffff;
+        }
     }
 }

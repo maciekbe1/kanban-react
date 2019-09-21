@@ -1,7 +1,7 @@
 import React from "react";
 import "./assets/styles/Global.scss";
 import { ApolloClient } from "apollo-client";
-import { ApolloProvider } from "react-apollo-hooks";
+import { ApolloProvider } from "@apollo/react-hooks";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { createHttpLink } from "apollo-link-http";
 import Cookies from "universal-cookie";
@@ -10,6 +10,13 @@ import { split } from "apollo-link";
 // import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { applyMiddleware, createStore } from "redux";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import reducers from "./reducers";
+import logger from "redux-logger";
 //components
 import Routes from "./Routes";
 
@@ -32,6 +39,7 @@ function App() {
         uri: process.env.REACT_APP_WS,
         options: {
             reconnect: true,
+            lazy: true,
             connectionParams: () => ({
                 authorization: ACCESS_TOKEN ? `${ACCESS_TOKEN}` : null
             })
@@ -67,10 +75,21 @@ function App() {
         link,
         cache: new InMemoryCache()
     });
+    const persistConfig = {
+        key: "root",
+        storage
+    };
+    const persistedReducer = persistReducer(persistConfig, reducers);
+    const store = createStore(persistedReducer, applyMiddleware(logger));
+    let persistor = persistStore(store);
     return (
-        <ApolloProvider client={client}>
-            <Routes />
-        </ApolloProvider>
+        <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+                <ApolloProvider client={client}>
+                    <Routes />
+                </ApolloProvider>
+            </PersistGate>
+        </Provider>
     );
 }
 

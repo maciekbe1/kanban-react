@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSubscription } from "react-apollo-hooks";
+import { useSubscription } from "@apollo/react-hooks";
 import PanelMessage from "../Messages/PanelMessage";
 import { MESSAGE_SUB } from "../../graphql";
 import { useSelector } from "react-redux";
@@ -19,7 +19,6 @@ export default function Messages() {
             return <PanelMessage key={index} data={item} />;
         });
     };
-    console.log(messageData);
     return (
         <>
             <div>

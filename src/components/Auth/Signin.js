@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import Error from "../Error";
 import gql from "graphql-tag";
-import { useMutation } from "react-apollo-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import { isAuthenticated } from "../../containers/isAuth";
 import Cookies from "universal-cookie";
 import { useDispatch } from "react-redux";
@@ -38,7 +38,7 @@ function Signin(props) {
                     userID: isAuthenticated().userID
                 })
             );
-            props.history.push(`/`);
+            props.history.push(`/dashboard`);
         });
     };
     const validateForm = () => {

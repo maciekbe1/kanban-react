@@ -9,7 +9,7 @@ import Signin from "./Auth/Signin";
 
 export default function Navigation() {
     const dispatch = useDispatch();
-    const currentUser = useSelector(state => state.currentUser);
+    const user = useSelector(state => state.authReducer);
     const cookies = new Cookies();
     const onSignout = () => {
         dispatch(signOut());
@@ -40,7 +40,7 @@ export default function Navigation() {
                     id="navbarSupportedContent"
                 >
                     <ul className="navbar-nav mr-auto">
-                        {currentUser.isAuth ? (
+                        {user.isAuth ? (
                             <a
                                 className="nav-link"
                                 href="#test"
@@ -48,12 +48,12 @@ export default function Navigation() {
                             >
                                 Logged in as:{" "}
                                 <span className="logged-as-name text-success">
-                                    {currentUser.login}
+                                    {user.login}
                                 </span>
                             </a>
                         ) : null}
                     </ul>
-                    {!currentUser.isAuth ? (
+                    {!user.isAuth ? (
                         <div className="btn-group">
                             <button
                                 className="btn btn-belizehole"

@@ -12,3 +12,10 @@ export const signOut = () => {
         type: "SIGNOUT_USER"
     };
 };
+
+export const getMessagesCount = count => {
+    return {
+        type: "MESSAGE_COUTER",
+        count
+    };
+};
